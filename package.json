@@ -1,0 +1,20 @@
+{
+  "name": "nepali-shop-backend",
+  "version": "1.0.0",
+  "description": "Backend for Nepali Products Barcelona — live shipping rates (USPS/UPS/DHL/DHL eCommerce/FedEx via Shippo) and order intake",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nanoid": "^3.3.7",
+    "nodemailer": "^6.9.14",
+    "shippo": "^2.5.0",
+    "stripe": "^16.8.0"
+  }
+}
