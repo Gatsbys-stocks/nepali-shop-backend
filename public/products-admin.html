@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Productos — Buddhabhumi Admin</title>
+<link rel="stylesheet" href="css/products-admin.css">
+</head>
+<body>
+  <h1>Productos — Buddhabhumi</h1>
+  <div class="top">
+    <input id="adminKey" type="password" placeholder="Contraseña">
+    <button id="loadBtn" type="button">Cargar productos</button>
+  </div>
+  <div id="msg"></div>
+
+  <h2 id="formTitle">Añadir producto</h2>
+  <form id="productForm">
+    <input type="hidden" id="editId">
+    <div class="row">
+      <input id="fName" placeholder="Nombre (nepalí)" required>
+      <input id="fEn" placeholder="Traducción (inglés)" required>
+    </div>
+    <div class="row">
+      <select id="fCat" required></select>
+      <input id="fSize" placeholder="Tamaño, ej: 500 gm / 1 kg / 1 ud" required>
+      <input id="fPrice" type="number" step="0.01" min="0" placeholder="Precio (€)" required>
+      <input id="fPack" placeholder="Pack (opcional), ej: 16€ / 30 pkt">
+    </div>
+    <label class="stock-check">
+      <input type="checkbox" id="fStock" checked>
+      En stock (si lo desmarcas, los clientes no podrán pedirlo)
+    </label>
+    <div class="row">
+      <input id="fImageFile" type="file" accept="image/*">
+      <span id="uploadStatus"></span>
+    </div>
+    <input type="hidden" id="fImageUrl">
+    <img id="preview" class="preview-img" style="display:none;">
+    <div class="row">
+      <button type="submit" id="saveBtn">Guardar producto</button>
+      <button type="button" class="secondary" id="cancelBtn">Cancelar edición</button>
+    </div>
+  </form>
+
+  <h2>Catálogo (<span id="count">0</span> productos)</h2>
+  <input id="search" placeholder="Buscar por nombre..." class="search-input">
+  <div id="productList" class="product-list"></div>
+
+  <script src="js/products-admin.js"></script>
+</body>
+</html>
