@@ -2,19 +2,18 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pedidos — Buddhabhumi Admin</title>
 <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
   <h1>Pedidos — Buddhabhumi</h1>
-  <div>
-    <input id="adminKey" type="password" placeholder="Clave de administrador (ADMIN_KEY)">
-    <input id="apiBase" type="text" placeholder="URL del backend, ej: https://tu-backend.onrender.com" style="width:340px">
-    <button onclick="load()">Cargar pedidos</button>
+  <div class="top">
+    <input id="adminKey" type="password" placeholder="Contraseña">
+    <button id="loadBtn" type="button">Cargar pedidos</button>
   </div>
-  <table id="tbl"><thead>
-    <tr><th>Pedido</th><th>Cliente</th><th>Dirección</th><th>Productos</th><th>Envío</th><th>Total</th><th>Etiqueta</th></tr>
-  </thead><tbody></tbody></table>
+  <div id="msg"></div>
+  <div id="orderList" class="order-list"></div>
 
   <script src="js/admin.js"></script>
 </body>
