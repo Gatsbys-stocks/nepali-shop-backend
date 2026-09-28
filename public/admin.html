@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel — Buddhabhumi</title>
+<link rel="icon" type="image/svg+xml" href="img/logo.svg?v=3">
+<meta name="theme-color" content="#003893">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600&family=Noto+Serif+Devanagari:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css?v=3">
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section class="login" id="loginView">
+  <form class="login-card" id="loginForm" autocomplete="on">
+    <img src="img/logo.svg?v=3" alt="" class="login-logo">
+    <h1>Buddhabhumi</h1>
+    <p class="login-sub">Panel de administración</p>
+    <label for="loginKey">Contraseña</label>
+    <input id="loginKey" type="password" autocomplete="current-password" required autofocus>
+    <label class="check"><input type="checkbox" id="rememberMe"> Recordar en este dispositivo</label>
+    <button type="submit" class="btn btn-gold btn-block" id="loginBtn">Entrar</button>
+    <div class="login-error" id="loginError" role="alert"></div>
+    <p class="login-hint">El servidor puede tardar ~30 s en despertar si nadie ha entrado en un rato.</p>
+  </form>
+</section>
+
+<!-- ============ APP (oculta hasta que la contraseña sea correcta) ============ -->
+<div class="app" id="appView" hidden>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img src="img/logo.svg?v=3" alt="" width="40" height="40">
+        <div>
+          <div class="brand-name">Buddhabhumi</div>
+          <div class="brand-sub">Panel</div>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="pedidos" role="tab">Pedidos <span class="tab-badge" id="badgeOrders" hidden></span></button>
+        <button class="tab" data-tab="productos" role="tab">Productos</button>
+        <button class="tab" data-tab="cupones" role="tab">Cupones</button>
+      </nav>
+      <div class="topbar-actions">
+        <a class="btn btn-ghost btn-sm" href="https://gatsbys-stocks.github.io/Nepali-Products/" target="_blank" rel="noopener">Ver tienda ↗</a>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn" type="button">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <main class="main">
+
+    <!-- ---------- PEDIDOS ---------- -->
+    <section class="view" id="view-pedidos">
+      <div class="view-head">
+        <h2>Pedidos</h2>
+        <button class="btn btn-ghost btn-sm" id="reloadOrders" type="button">↻ Actualizar</button>
+      </div>
+      <div class="stats" id="orderStats"></div>
+      <div class="filters">
+        <input type="search" id="orderSearch" placeholder="Buscar por nº, nombre, teléfono…">
+        <select id="orderFilter">
+          <option value="">Todos los estados</option>
+          <option value="nuevo">Nuevo (sin pagar)</option>
+          <option value="pagado">Pagado</option>
+          <option value="preparando">Preparando</option>
+          <option value="etiqueta_comprada">Etiqueta comprada</option>
+          <option value="enviado">Enviado</option>
+          <option value="entregado">Entregado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+      </div>
+      <div id="orderList" class="order-list"></div>
+    </section>
+
+    <!-- ---------- PRODUCTOS ---------- -->
+    <section class="view" id="view-productos" hidden>
+      <div class="view-head">
+        <h2>Productos <span class="muted" id="productCount"></span></h2>
+        <button class="btn btn-gold btn-sm" id="newProductBtn" type="button">+ Nuevo producto</button>
+      </div>
+      <div class="filters">
+        <input type="search" id="productSearch" placeholder="Buscar por nombre…">
+        <select id="productCatFilter"></select>
+        <select id="productStockFilter">
+          <option value="">Todo el stock</option>
+          <option value="in">En stock</option>
+          <option value="out">Agotados</option>
+        </select>
+      </div>
+      <div id="productList" class="product-grid"></div>
+    </section>
+
+    <!-- ---------- CUPONES ---------- -->
+    <section class="view" id="view-cupones" hidden>
+      <div class="view-head">
+        <h2>Cupones y eventos</h2>
+        <button class="btn btn-gold btn-sm" id="newCouponBtn" type="button">+ Nuevo cupón</button>
+      </div>
+      <p class="muted small">Crea códigos de descuento para Dashain, Tihar, Navidad, Black Friday… Si marcas <b>“Anunciar en la tienda”</b>, sale un banner arriba de la web con el código mientras esté activo. El descuento se calcula siempre en el servidor y se aplica en el pago con Stripe.</p>
+      <div id="couponList" class="coupon-list"></div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ MODAL PRODUCTO ============ -->
+<div class="modal-wrap" id="productModal" hidden>
+  <form class="modal" id="productForm">
+    <div class="modal-head">
+      <h3 id="productFormTitle">Nuevo producto</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar">×</button>
+    </div>
+    <input type="hidden" id="editId">
+    <div class="photo-drop" id="photoDrop">
+      <img id="preview" alt="" hidden>
+      <div class="photo-placeholder" id="photoPlaceholder">📷<br><span>Toca para subir una foto</span></div>
+      <input id="fImageFile" type="file" accept="image/*">
+    </div>
+    <div class="upload-status" id="uploadStatus"></div>
+    <input type="hidden" id="fImageUrl">
+    <div class="grid-2">
+      <div><label for="fName">Nombre (nepalí)</label><input id="fName" required></div>
+      <div><label for="fEn">Nombre (inglés)</label><input id="fEn" required></div>
+    </div>
+    <div class="grid-3">
+      <div><label for="fCat">Categoría</label><select id="fCat" required></select></div>
+      <div><label for="fSize">Tamaño</label><input id="fSize" placeholder="500 gm / 1 kg / 1 ud" required></div>
+      <div><label for="fPrice">Precio (€)</label><input id="fPrice" type="number" step="0.01" min="0" required></div>
+    </div>
+    <label for="fPack">Pack (opcional)</label>
+    <input id="fPack" placeholder="ej: 16€ / 30 pkt">
+    <label class="check"><input type="checkbox" id="fStock" checked> En stock</label>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-danger-ghost" id="deleteProductBtn" hidden>Borrar</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-ghost" data-close>Cancelar</button>
+      <button type="submit" class="btn btn-gold" id="saveProductBtn">Guardar</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============ MODAL CUPÓN ============ -->
+<div class="modal-wrap" id="couponModal" hidden>
+  <form class="modal" id="couponForm">
+    <div class="modal-head">
+      <h3 id="couponFormTitle">Nuevo cupón</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar">×</button>
+    </div>
+    <input type="hidden" id="cId">
+    <div class="grid-2">
+      <div>
+        <label for="cEvent">Evento</label>
+        <input id="cEvent" list="eventList" placeholder="ej: Dashain 2026">
+        <datalist id="eventList">
+          <option value="Dashain"><option value="Tihar"><option value="Holi"><option value="Teej">
+          <option value="Año Nuevo Nepalí"><option value="Buddha Jayanti"><option value="Black Friday">
+          <option value="Navidad"><option value="Año Nuevo"><option value="Bienvenida (primer pedido)">
+        </datalist>
+      </div>
+      <div>
+        <label for="cCode">Código</label>
+        <div class="input-btn">
+          <input id="cCode" required placeholder="DASHAIN10" style="text-transform:uppercase">
+          <button type="button" class="btn btn-ghost btn-sm" id="genCode" title="Generar a partir del evento">Generar</button>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div>
+        <label>Tipo de descuento</label>
+        <div class="seg">
+          <label><input type="radio" name="cType" value="percent" checked><span>% porcentaje</span></label>
+          <label><input type="radio" name="cType" value="fixed"><span>€ importe fijo</span></label>
+        </div>
+      </div>
+      <div><label for="cValue" id="cValueLabel">Descuento (%)</label><input id="cValue" type="number" min="0.5" step="0.5" required></div>
+    </div>
+    <div class="grid-2">
+      <div><label for="cStart">Desde (opcional)</label><input id="cStart" type="date"></div>
+      <div><label for="cEnd">Hasta (opcional)</label><input id="cEnd" type="date"></div>
+    </div>
+    <div class="grid-2">
+      <div><label for="cMin">Pedido mínimo (€)</label><input id="cMin" type="number" min="0" step="1" placeholder="0 = sin mínimo"></div>
+      <div><label for="cMax">Usos máximos</label><input id="cMax" type="number" min="0" step="1" placeholder="0 = ilimitado"></div>
+    </div>
+    <label class="check"><input type="checkbox" id="cActive" checked> Activo</label>
+    <label class="check"><input type="checkbox" id="cPublic"> Anunciar en la tienda (banner arriba de la web)</label>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-danger-ghost" id="deleteCouponBtn" hidden>Borrar</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-ghost" data-close>Cancelar</button>
+      <button type="submit" class="btn btn-gold">Guardar cupón</button>
+    </div>
+  </form>
+</div>
+
+<script src="js/admin.js?v=3"></script>
+</body>
+</html>
